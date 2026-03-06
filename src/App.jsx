@@ -2,14 +2,18 @@ import React from 'react'
 import { useState,useEffect } from 'react'
 import { BrowserRouter,Route,Routes}from "react-router-dom"
 import Home from './components/Home'
-import Coin from './components/Coin'
+import DetailCoin from './components/DetailCoin'
+import Favorites from './components/Favorites'
 
 
 
 function App() {
 
-    const [data,setData]=useState([])
-    const [coin,setCoin]=useState("")
+    const [data,setData]=useState([])//ESTADO INICIAL
+    const [coin,setCoin]=useState({})
+    const initialFavorites =JSON.parse(localStorage.getItem("favorites")) || []
+    const [fav, setFav] = useState(initialFavorites)
+   
 
     useEffect(()=>{
 
@@ -24,18 +28,21 @@ function App() {
 
 
     },[])
-  return (
+    //guardaqr en lcst
+
+    useEffect(() => {
+      localStorage.setItem("favorites",JSON.stringify(fav))
+    },[fav])
+    
+     return (
     <> 
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<Home data={data}/>}></Route>
-          {/* <Route path='/coin/:id' element={<Coin/>}></Route> */}
+          <Route path='/' element={<Home data={data} fav={fav} setFav={setFav} />}></Route>
+          <Route path='/coin/:id' element={<DetailCoin setCoin={setCoin} coin={coin}/>}></Route>
+          <Route path='/favorites' element={<Favorites fav={fav} setFav={setFav}/>} />
         </Routes>
-      
       </BrowserRouter>
-
-      <Home data={data}/>
-      
       </>
   )
 }

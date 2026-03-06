@@ -1,29 +1,32 @@
 
-
 import { useParams } from "react-router-dom"
-export default function Coin() {
+import { useEffect } from "react"
 
-    const {id}= useParams()
+export default function Coin({coin, fav, setFav, view=''}) {
 
-    useEffect(()=>{
+    const handleClick=()=>{
+        if(fav.find((c) => c.id === coin.id)) {
+            alert('Esta moneda ya está en favoritos')
+            return 
+        } 
+        alert('Moneda añadida a favoritos correctamente')
+        setFav([...fav,coin ])//guardar en fav 
+}
 
-        const getData= async ()=>{
-            const url=`${import.meta.env.VITE_API_URL}assets?apiKey=YourApiKey${import.meta.env.VITE_API_KEY}/bitcoin`
-            const response = fetch(url)
-            const datos = await response.json()
-            console.log(datos)
-            //setCoin(datos)
-
-        }
-        getData()
-    },[id])
+    const handleClickDel=()=>{
+      
+        const newFavs = fav.filter((c) => c.id !== coin.id)
+        alert(`${coin.id} eliminado de favoritos`)
+        setFav(newFavs)//guardar en fav
+}
     
   return (
     <div>
         <h2>{coin.name}</h2>
+        {view==='home'?<button onClick={handleClick}>Añadir a favoritos</button>:""}
+        {view==="fav"?<button onClick={handleClickDel}>Eliminar</button> :""}
         <p>{coin.symbol}</p>
         <p>{Math.floor(coin.priceUsd)}$</p>
-
     </div>
   )
 }
